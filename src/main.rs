@@ -1,28 +1,12 @@
-use std::time::Duration;
-
-use tokio::task;
+use axum::{Router, routing::get};
 
 #[tokio::main]
 async fn main() {
+    // define the application
+    let app = Router::new().route("/hello", get(|| async {"hello world"}));
 
-    let handle = tokio::spawn(async {
-        for _ in 0..4 {
-            tokio::time::sleep(Duration::from_secs(2)).await;
-            println!("hi");
-            task::yield_now().await;
-        }
-    });
-    
-    let handle2 =  tokio::spawn(async {
-        for _ in 0..4 {
-            tokio::time::sleep(Duration::from_secs(4)).await;
-            println!("bye");
-            task::yield_now().await;
-        }
-    });
-
-    handle.await;
-    handle2.await;
-
-    println!("Hello, world!");
+    axum::Server::bind(&"0.0.0.0:3002".parse().unwrap())
+        .serve(app.into_make_service())
+        .await
+        .unwrap()
 }
