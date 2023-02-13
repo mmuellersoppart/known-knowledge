@@ -1,8 +1,20 @@
 mod routes;
 
 use routes::create_routes;
+use sea_orm::Database;
 
 pub async fn run() {
+    // load env variables
+    let db_url = dotenvy::var("DATABASE_URL")
+        .unwrap_or("postgre://postgres:password@localhost:5433/postgres".to_string());
+
+    println!("{db_url}");
+
+    // connect to database
+    let connection = Database::connect(&db_url).await.expect("failed to connect");
+
+    println!("{connection:?}");
+
     // define the application
     let app = create_routes();
 
