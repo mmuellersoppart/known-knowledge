@@ -11,12 +11,12 @@ pub async fn run() {
     println!("{db_url}");
 
     // connect to database
-    let connection = Database::connect(&db_url).await.expect("failed to connect");
+    let db = Database::connect(&db_url).await.expect("failed to connect");
 
-    println!("{connection:?}");
+    println!("{db:?}");
 
     // define the application
-    let app = create_routes();
+    let app = create_routes(db);
 
     axum::Server::bind(&"0.0.0.0:3002".parse().unwrap())
         .serve(app.into_make_service())
