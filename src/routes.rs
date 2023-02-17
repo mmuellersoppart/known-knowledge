@@ -1,22 +1,24 @@
 use axum::{
-    routing::{delete, get, post, put},
+    routing::{delete, get, patch, post, put},
     Router,
 };
 use sea_orm::DatabaseConnection;
 
-mod atomic_update_idea;
-mod create_idea;
-mod delete_idea;
 mod hello;
-mod list_ideas;
-mod retrieve_idea;
+mod idea_atomic_update;
+mod idea_create;
+mod idea_delete;
+mod idea_partial_update;
+mod idea_retrieve;
+mod ideas_list;
 
-use atomic_update_idea::atomic_update_idea;
-use create_idea::create_idea;
-use delete_idea::delete_idea;
 use hello::{hello, helloo};
-use list_ideas::list_ideas;
-use retrieve_idea::retrieve_idea;
+use idea_atomic_update::idea_atomic_update;
+use idea_create::idea_create;
+use idea_delete::idea_delete;
+use idea_partial_update::idea_partial_update;
+use idea_retrieve::idea_retrieve;
+use ideas_list::ideas_list;
 
 #[derive(Debug, Clone)]
 pub struct AppState {
@@ -27,10 +29,11 @@ pub fn create_routes(db: DatabaseConnection) -> Router {
     Router::new()
         .route("/hello", get(hello))
         .route("/helloo", get(helloo))
-        .route("/idea/:idea_id", get(retrieve_idea))
-        .route("/idea", get(list_ideas))
-        .route("/idea", post(create_idea))
-        .route("/idea/:idea_id", delete(delete_idea))
-        .route("/idea/:idea_id", put(atomic_update_idea))
+        .route("/idea/:idea_id", get(idea_retrieve))
+        .route("/idea", get(ideas_list))
+        .route("/idea", post(idea_create))
+        .route("/idea/:idea_id", delete(idea_delete))
+        .route("/idea/:idea_id", put(idea_atomic_update))
+        .route("/idea/:idea_id", patch(idea_partial_update))
         .with_state(AppState { db })
 }

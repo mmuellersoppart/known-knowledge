@@ -18,7 +18,7 @@ pub struct CreateUserResponse {
     id: Uuid,
 }
 
-pub async fn create_idea(
+pub async fn idea_create(
     State(app_state): State<AppState>,
     Json(user_data): Json<CreateUser>,
 ) -> Result<Json<CreateUserResponse>, StatusCode> {

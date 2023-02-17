@@ -17,7 +17,7 @@ pub struct PublicIdea {
     description: Option<String>,
 }
 
-pub async fn retrieve_idea(
+pub async fn idea_retrieve(
     Path(idea_id): Path<Uuid>,
     State(app_state): State<AppState>,
 ) -> Result<Json<PublicIdea>, StatusCode> {

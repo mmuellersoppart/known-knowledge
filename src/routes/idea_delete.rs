@@ -9,7 +9,7 @@ use super::AppState;
 
 use crate::database::idea::Entity;
 
-pub async fn delete_idea(
+pub async fn idea_delete(
     Path(idea_id): Path<Uuid>,
     State(app_state): State<AppState>,
 ) -> Result<(), StatusCode> {

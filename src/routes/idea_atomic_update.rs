@@ -16,7 +16,7 @@ pub struct AtomicUpdateIdea {
     description: Option<String>,
 }
 
-pub async fn atomic_update_idea(
+pub async fn idea_atomic_update(
     Path(idea_id): Path<Uuid>,
     State(app_state): State<AppState>,
     Json(idea_data): Json<AtomicUpdateIdea>,

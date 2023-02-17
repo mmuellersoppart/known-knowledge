@@ -12,7 +12,7 @@ pub struct ListIdea {
     name: String,
 }
 
-pub async fn list_ideas(
+pub async fn ideas_list(
     State(app_state): State<AppState>,
 ) -> Result<Json<Vec<ListIdea>>, StatusCode> {
     let ideas = idea::Entity::find()
