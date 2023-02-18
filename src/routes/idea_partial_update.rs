@@ -30,15 +30,15 @@ pub async fn idea_partial_update(
     let db_idea = idea::Entity::find_by_id(idea_id)
         .one(&app_state.db)
         .await
-        .map_err(|_| AppError {
-            status_code: StatusCode::INTERNAL_SERVER_ERROR,
-            message: "Retrieval Failed.".to_owned()
-        })?;
+        .map_err(|_| AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "Retrieval Failed."))?;
 
     let mut active_idea = if let Some(idea) = db_idea {
         idea.into_active_model()
     } else {
-        return Err(AppError { status_code: StatusCode::INTERNAL_SERVER_ERROR, message: "Idea not found.".to_owned() });
+        return Err(AppError::new(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Idea not found.",
+        ));
     };
 
     if let Some(name) = idea_data.name {
@@ -52,10 +52,7 @@ pub async fn idea_partial_update(
     active_idea
         .update(&app_state.db)
         .await
-        .map_err(|_| AppError {
-            status_code: StatusCode::INTERNAL_SERVER_ERROR,
-            message: "Failed to update entry".to_owned()
-        })?;
+        .map_err(|_| AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "Failed to update entry"))?;
 
     Ok(())
 }

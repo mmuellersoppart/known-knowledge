@@ -32,37 +32,44 @@ pub async fn idea_atomic_update(
     // full replacement (change the primary key, id)
     if let Some(new_id) = idea_data.id {
         if new_id != idea_id {
-            println!("we made it here.");
-
             active_idea.id = Set(new_id);
 
-            // TODO: check if anything is actually deleted
-            idea::Entity::delete_by_id(idea_id).exec(&app_state.db).await.map_err(|_| AppError {
-                status_code: StatusCode::INTERNAL_SERVER_ERROR,
-                message: "failed to delete existing idea for replacement".to_owned(),
-            })?;
+            let result = idea::Entity::delete_by_id(idea_id)
+                .exec(&app_state.db)
+                .await
+                .map_err(|_| {
+                    AppError::new(
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        "failed to delete existing idea for replacement",
+                    )
+                })?;
 
+            if result.rows_affected == 0 {
+                let idea_uuid = idea_id.clone().to_string();
+                let msg = format!("The id, {}, is not associated with an idea", idea_uuid);
+                return Err(AppError::new(StatusCode::NOT_FOUND, msg));
+            }
 
             idea::Entity::insert(active_idea)
                 .exec(&app_state.db)
                 .await
-                .map_err(|_| AppError {
-                    status_code: StatusCode::INTERNAL_SERVER_ERROR,
-                    message: "failed to save new idea".to_owned()
+                .map_err(|_| {
+                    AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "failed to save new idea")
                 })?;
 
-            return Ok(())
+            return Ok(());
         }
     }
 
     idea::Entity::update(active_idea)
         .exec(&app_state.db)
         .await
-        .map_err(|_| AppError {
-            status_code: StatusCode::INTERNAL_SERVER_ERROR,
-            message: "atomic update of idea failed {idea_data:?}".to_owned()
-        }
-        )?;
+        .map_err(|_| {
+            AppError::new(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "atomic update of idea failed {idea_data:?}",
+            )
+        })?;
 
     Ok(())
     // Update entity

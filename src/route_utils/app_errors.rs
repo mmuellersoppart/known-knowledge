@@ -18,9 +18,12 @@ impl AppError {
 impl IntoResponse for AppError {
     fn into_response(self) -> axum::response::Response {
         (
-                self.status_code,
-            Json(ResponseMessage { message:self.message })
-        ).into_response()
+            self.status_code,
+            Json(ResponseMessage {
+                message: self.message,
+            }),
+        )
+            .into_response()
     }
 }
 
