@@ -14,6 +14,7 @@ use crate::{database::idea, route_utils::app_errors::AppError};
 pub struct AtomicUpdateIdea {
     id: Option<Uuid>,
     name: String,
+    context: Option<String>,
     description: Option<String>,
 }
 
@@ -26,6 +27,7 @@ pub async fn idea_atomic_update(
     let mut active_idea = idea::ActiveModel {
         id: Set(idea_id),
         name: Set(idea_data.name),
+        context: Set(idea_data.context),
         description: Set(idea_data.description),
     };
 

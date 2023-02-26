@@ -14,7 +14,7 @@ mod ideas_list;
 
 use hello::{hello, helloo};
 use idea_atomic_update::idea_atomic_update;
-use idea_create::idea_create;
+use idea_create::{idea_create, ideas_create};
 use idea_delete::idea_delete;
 use idea_partial_update::idea_partial_update;
 use idea_retrieve::idea_retrieve;
@@ -32,6 +32,7 @@ pub fn create_routes(db: DatabaseConnection) -> Router {
         .route("/idea/:idea_id", get(idea_retrieve))
         .route("/idea", get(ideas_list))
         .route("/idea", post(idea_create))
+        .route("/ideas", post(ideas_create))
         .route("/idea/:idea_id", delete(idea_delete))
         .route("/idea/:idea_id", put(idea_atomic_update))
         .route("/idea/:idea_id", patch(idea_partial_update))
