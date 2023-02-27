@@ -1,4 +1,4 @@
-use knownknowledge::run;
+use app::run;
 
 #[tokio::main]
 async fn main() {
