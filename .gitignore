@@ -5,3 +5,4 @@
 /examples/*/target
 Cargo.lock
 .DS_Store
+ideas.json
