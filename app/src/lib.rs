@@ -2,6 +2,7 @@ mod database;
 mod route_utils;
 mod routes;
 
+use migration::{Migrator, MigratorTrait};
 use routes::create_routes;
 use sea_orm::Database;
 
@@ -16,6 +17,9 @@ pub async fn run() {
     let db = Database::connect(&db_url).await.expect("failed to connect");
 
     println!("{db:?}");
+
+    println!("Do migration");
+    Migrator::up(&db, None).await.expect("migration failed");
 
     // define the application
     let app = create_routes(db);
