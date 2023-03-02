@@ -4,7 +4,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use super::AppState;
-use crate::database::idea;
+use::entity::idea;
 
 #[derive(Debug, Serialize)]
 pub struct ListIdea {

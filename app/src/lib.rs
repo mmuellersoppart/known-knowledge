@@ -1,4 +1,3 @@
-mod database;
 mod route_utils;
 mod routes;
 

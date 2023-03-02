@@ -3,10 +3,8 @@ use sea_orm::{EntityTrait, Set};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::{
-    database::idea::{self, ActiveModel, Entity},
-    route_utils::app_errors::AppError,
-};
+use crate::route_utils::app_errors::AppError;
+use entity::idea::{self, ActiveModel, Entity};
 
 use super::AppState;
 

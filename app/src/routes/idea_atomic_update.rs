@@ -8,7 +8,8 @@ use serde::Deserialize;
 use uuid::Uuid;
 
 use super::AppState;
-use crate::{database::idea, route_utils::app_errors::AppError};
+use crate::route_utils::app_errors::AppError;
+use entity::idea;
 
 #[derive(Debug, Deserialize)]
 pub struct AtomicUpdateIdea {

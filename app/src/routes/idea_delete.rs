@@ -7,7 +7,7 @@ use uuid::Uuid;
 
 use super::AppState;
 
-use crate::database::idea::Entity;
+use entity::idea::Entity;
 
 pub async fn idea_delete(
     Path(idea_id): Path<Uuid>,
