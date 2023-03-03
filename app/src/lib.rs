@@ -18,7 +18,7 @@ pub async fn run() {
     println!("{db:?}");
 
     println!("Do migration");
-    Migrator::up(&db, None).await.expect("migration failed");
+//    Migrator::up(&db, None).await.expect("migration failed");
 
     // define the application
     let app = create_routes(db);
