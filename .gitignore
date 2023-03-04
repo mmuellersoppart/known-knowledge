@@ -1,5 +1,6 @@
 **/.env
 
+/test_data
 /target
 /examples/target
 /examples/*/target

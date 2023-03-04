@@ -3,5 +3,6 @@
 members = [
     "app",
     "entity",
-    "migration"
+    "migration",
+    "common"
 ]
