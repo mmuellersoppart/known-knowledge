@@ -49,7 +49,6 @@ pub enum Idea {
     Description
 }
 
-
 #[cfg(test)]
 mod create_idea_test {
     use sea_orm_migration::prelude::*;

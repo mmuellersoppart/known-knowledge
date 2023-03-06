@@ -17,6 +17,8 @@ use entity::idea;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let db = manager.get_connection();
+
+        //transactional approach
         let transaction = db.begin().await?;
 
         // read in json file
