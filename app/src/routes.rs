@@ -1,3 +1,4 @@
+use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use axum::{
     routing::{delete, get, patch, post, put},
     Router,
@@ -37,4 +38,5 @@ pub fn create_routes(db: DatabaseConnection) -> Router {
         .route("/idea/:idea_id", put(idea_atomic_update))
         .route("/idea/:idea_id", patch(idea_partial_update))
         .with_state(AppState { db })
+        .layer(TraceLayer::new_for_http())
 }

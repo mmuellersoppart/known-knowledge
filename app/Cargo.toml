@@ -12,9 +12,12 @@ common = { path = "../common" }
 
 axum = { version = "0.6.4", features = ["headers"] }
 tokio = { version = "1.25.0", features = ["full"] }
+
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-sea-orm = { version = "0.11.0", features = ["sqlx-postgres", "runtime-tokio-rustls"] }
+tower-http = { version = "0.4.0", features = ["trace"] }
+
+sea-orm = { version = "0.11.0", features = ["sqlx-postgres", "runtime-tokio-rustls", "debug-print"] }
 dotenvy = "0.15.6"
 uuid = { version = "1.3.0", features = ["v4", "serde"] }
 serde = { version = "1.0.152", features = ["derive"] }

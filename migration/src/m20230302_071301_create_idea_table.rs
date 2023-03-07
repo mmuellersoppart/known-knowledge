@@ -1,5 +1,7 @@
 use sea_orm_migration::prelude::*;
 use sea_orm_migration::sea_query::extension::postgres::*;
+use tracing::{event, Level};
+
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -8,6 +10,8 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         // Replace the sample below with your own migration scripts
+
+        event!(Level::INFO, "Create ideas table.");
 
         manager
             .create_table(
