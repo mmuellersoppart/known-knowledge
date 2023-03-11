@@ -2,6 +2,7 @@ use sea_orm_migration::prelude::*;
 use sea_orm_migration::sea_query::extension::postgres::*;
 use tracing::{event, Level};
 
+use crate::Idea;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -43,15 +44,6 @@ impl MigrationTrait for Migration {
     }
 }
 
-/// Learn more at https://docs.rs/sea-query#iden
-#[derive(Iden)]
-pub enum Idea {
-    Table,
-    Id,
-    Name,
-    Context,
-    Description
-}
 
 #[cfg(test)]
 mod create_idea_test {
