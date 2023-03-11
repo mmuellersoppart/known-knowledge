@@ -1,7 +1,7 @@
-use std::path::Path;
 use std::fs;
+use std::path::Path;
 
-use sea_orm_migration::sea_orm::{Set, TransactionTrait, ActiveModelTrait};
+use sea_orm_migration::sea_orm::{ActiveModelTrait, Set, TransactionTrait};
 use serde_json;
 
 use sea_orm_migration::prelude::*;
@@ -25,20 +25,21 @@ impl MigrationTrait for Migration {
         let bootstrap_ideas_path = Path::new("./migration/test_data/ideas.json");
 
         // convert to CreateIdea structs
-        let json_str = fs::read_to_string(bootstrap_ideas_path).expect("failed to read file {bootstrap_ideas_path:?}");
-        let data: Vec<CreateIdea> = serde_json::from_str(&json_str).expect("failed to convert to json");
+        let json_str = fs::read_to_string(bootstrap_ideas_path)
+            .expect("failed to read file {bootstrap_ideas_path:?}");
+        let data: Vec<CreateIdea> =
+            serde_json::from_str(&json_str).expect("failed to convert to json");
 
         // convert those to active models
-        let active_ideas: Vec<idea::ActiveModel> = data.into_iter().map(
-                |idea_data| {
-                    idea::ActiveModel {
-                        name: Set(idea_data.name),
-                        context: Set(idea_data.context),
-                        description: Set(idea_data.description),
-                        ..Default::default()
-                    }
-                }
-        ).collect();
+        let active_ideas: Vec<idea::ActiveModel> = data
+            .into_iter()
+            .map(|idea_data| idea::ActiveModel {
+                name: Set(idea_data.name),
+                context: Set(idea_data.context),
+                description: Set(idea_data.description),
+                ..Default::default()
+            })
+            .collect();
 
         for active_idea in active_ideas {
             active_idea.insert(&transaction).await?;
@@ -50,21 +51,10 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-
         manager
-            .truncate_table(Table::truncate().table(Idea::Table).to_owned())
+            .truncate_table(Table::truncate().table(crate::Idea::Table).to_owned())
             .await?;
 
         Ok(())
     }
-}
-
-/// Learn more at https://docs.rs/sea-query#iden
-#[derive(Iden)]
-pub enum Idea {
-    Table,
-    Id,
-    Name,
-    Context,
-    Description
 }

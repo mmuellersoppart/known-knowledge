@@ -1,9 +1,9 @@
-use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use axum::{
     routing::{delete, get, patch, post, put},
     Router,
 };
 use sea_orm::DatabaseConnection;
+use tower_http::trace::TraceLayer;
 
 mod hello;
 mod idea_atomic_update;
