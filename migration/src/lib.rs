@@ -3,7 +3,6 @@ pub use sea_orm_migration::prelude::*;
 pub mod m20230302_071301_create_idea_table;
 mod m20230304_062227_populate_ideas;
 mod m20230311_085935_create_idea_explanation_table;
-mod m20230311_115234_create_idea_exercises_table;
 
 use sea_orm::{EnumIter, Iterable};
 
@@ -27,7 +26,7 @@ pub enum Idea {
     Id,
     Name,
     Context,
-    Description
+    Description,
 }
 
 /// Learn more at https://docs.rs/sea-query#iden
@@ -39,4 +38,3 @@ pub enum Explanation {
     Content,
     Website,
 }
-
