@@ -52,7 +52,7 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .truncate_table(Table::truncate().table(crate::Idea::Table).to_owned())
+            .truncate_table(Table::truncate().table(crate::iden::Idea::Table).to_owned())
             .await?;
 
         Ok(())

@@ -1,6 +1,7 @@
-use sea_orm_migration::{prelude::*, sea_query::extension::postgres::Type, sea_orm::ConnectionTrait};
+use sea_orm_migration::{prelude::*, sea_query::extension::postgres::Type};
+use sea_orm_migration::sea_orm::ConnectionTrait;
 
-use crate::iden::ExerciseType;
+use crate::iden::ExplanationType;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -10,9 +11,9 @@ impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
             .create_type(
-                Type::create()
-                    .as_enum(ExerciseType::Table)
-                    .values([ExerciseType::External, ExerciseType::Notecard])
+                    Type::create()
+                    .as_enum(ExplanationType::Table)
+                    .values([ExplanationType::External, ExplanationType::Markdown])
                     .to_owned(),
             )
             .await?;
@@ -23,9 +24,10 @@ impl MigrationTrait for Migration {
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
             .get_connection()
-            .execute_unprepared("drop type explanation_type;")
+            .execute_unprepared("drop type exercise_type;")
             .await?;
 
         Ok(())
+        // TODO: remove type
     }
 }

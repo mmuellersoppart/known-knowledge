@@ -1,6 +1,6 @@
 use sea_orm_migration::prelude::*;
 
-use crate::{Exercise, ExerciseType, Idea};
+use crate::iden::{Exercise, ExerciseType, Idea};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -28,11 +28,11 @@ impl MigrationTrait for Migration {
                             .primary_key()
                             .extra("DEFAULT gen_random_uuid()".to_string()),
                     )
+                    .col(ColumnDef::new(Exercise::IdeaId).uuid().not_null())
                     .col(ColumnDef::new(Exercise::Type).enumeration(
                         ExerciseType::Table,
                         [ExerciseType::External, ExerciseType::Notecard],
                     ))
-                    .col(ColumnDef::new(Exercise::IdeaId).uuid().not_null())
                     .foreign_key(&mut idea_foreign_key)
                     .to_owned(),
             )

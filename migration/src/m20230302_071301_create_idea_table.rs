@@ -1,7 +1,7 @@
 use sea_orm_migration::prelude::*;
 use tracing::{event, Level};
 
-use crate::Idea;
+use crate::iden::Idea;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
