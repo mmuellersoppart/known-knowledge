@@ -11,16 +11,50 @@ pub enum Idea {
 }
 
 #[derive(Iden)]
+pub enum ExplainableType {
+    Table,
+    #[iden = "External"]
+    External,
+    #[iden = "Markdown"]
+    Markdown,
+}
+
+
+#[derive(Iden)]
+pub enum ExplainableMarkdown {
+    Table,
+    Id,
+    Title,
+    Markdown,
+    CreatedAt,
+    UpdatedAt,
+}
+
+
+#[derive(Iden)]
+pub enum ExplainableExternal {
+    Table,
+    Id,
+    Title,
+    Link,
+    CreatedAt,
+    UpdatedAt,
+}
+
+#[derive(Iden)]
 pub enum Explanation {
     Table,
     Id,
     IdeaId,
-    Content,
-    Website,
+    Type,
+    ExplainableId,
 }
 
+// will add fk to respective tables
+// explanation type field as well
+
 #[derive(Iden)]
-pub enum ExerciseType {
+pub enum ExerciseableType {
     Table,
     #[iden = "External"]
     External,
@@ -29,12 +63,31 @@ pub enum ExerciseType {
 }
 
 #[derive(Iden)]
-pub enum ExplanationType {
+pub enum Card {  // a deck of notecards
     Table,
-    #[iden = "External"]
-    External,
-    #[iden = "Markdown"]
-    Markdown,
+    Id,
+    DeckId,
+    Front,
+    Back
+}
+
+#[derive(Iden)]
+pub enum ExerciseableNotecard {  // a deck of notecards
+    Table,
+    Id,
+    Title,  // deck name
+    CreatedAt,
+    UpdatedAt,
+}
+
+#[derive(Iden)]
+pub enum ExerciseableExternal {
+    Table,
+    Id,
+    Title,
+    Link,
+    CreatedAt,
+    UpdatedAt,
 }
 
 #[derive(Iden)]
@@ -43,5 +96,6 @@ pub enum Exercise {
     Id,
     IdeaId,
     Type,
+    ExerciseableId
 }
 
