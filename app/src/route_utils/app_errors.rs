@@ -1,4 +1,7 @@
+use std::fmt::Display;
+
 use axum::{http::StatusCode, response::IntoResponse, Json};
+use sea_orm::error::DbErr;
 use serde::Serialize;
 
 pub struct AppError {
@@ -11,6 +14,13 @@ impl AppError {
         Self {
             status_code,
             message: message.into(),
+        }
+    }
+
+    pub fn from(err: impl Display) -> Self {
+        Self {
+            status_code: StatusCode::INTERNAL_SERVER_ERROR,
+            message: err.to_string(),
         }
     }
 }

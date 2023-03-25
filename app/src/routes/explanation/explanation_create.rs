@@ -23,17 +23,13 @@ pub async fn create_explanation_markdown(
     Path(idea_id): Path<Uuid>,
     Json(markdown_data): Json<CreateMarkdownExercise>,
 ) -> Result<(), AppError> {
-    let txn = app_state
-        .db
-        .begin()
-        .await
-        .map_err(|err| AppError::new(StatusCode::INTERNAL_SERVER_ERROR, err.to_string()))?;
+    let txn = app_state.db.begin().await.map_err(AppError::from)?;
 
     // confirm id is legit
     let active_idea = idea::Entity::find_by_id(idea_id)
         .one(&app_state.db)
         .await
-        .map_err(|_| AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "Fail to look for id"))?;
+        .map_err(AppError::from)?;
 
     let idea_id = if let Some(active_idea) = active_idea {
         active_idea.id
@@ -49,12 +45,7 @@ pub async fn create_explanation_markdown(
     let explainable_id = active_explainable
         .save(&txn)
         .await
-        .map_err(|_| {
-            AppError::new(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "Failed to save explainable",
-            )
-        })?
+        .map_err(AppError::from)?
         .id
         .unwrap();
 
@@ -68,12 +59,7 @@ pub async fn create_explanation_markdown(
     explainable_markdown::Entity::insert(markdown)
         .exec(&txn)
         .await
-        .map_err(|_| {
-            AppError::new(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "Failed to save markdown.",
-            )
-        })?;
+        .map_err(AppError::from)?;
 
     // Create explanation
     let explanation = explanation::ActiveModel {
@@ -84,19 +70,9 @@ pub async fn create_explanation_markdown(
         ..Default::default()
     };
 
-    explanation.save(&txn).await.map_err(|err| {
-        tracing::debug!("{}", err.to_string());
-        AppError::new(
-            StatusCode::INTERNAL_SERVER_ERROR,
-            "failed to save explanation.",
-        )
+    explanation.save(&txn).await.map_err(AppError::from)?;
 
-        // delete markdown if this fails but it really shouldn't
-    })?;
-
-    txn.commit()
-        .await
-        .map_err(|err| AppError::new(StatusCode::INTERNAL_SERVER_ERROR, err.to_string()))?;
+    txn.commit().await.map_err(AppError::from)?;
 
     Ok(())
 }
