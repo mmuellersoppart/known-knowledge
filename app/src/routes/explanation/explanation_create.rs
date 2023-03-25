@@ -1,7 +1,3 @@
-// define the data expected in the post
-
-use std::str::FromStr;
-
 use axum::{
     extract::{Path, State},
     http::StatusCode,
@@ -10,9 +6,8 @@ use axum::{
 use entity::{
     explainable, explainable_markdown, explanation, idea, sea_orm_active_enums::ExplainableType,
 };
-use sea_orm::{ActiveModelTrait, EntityTrait, Set, TransactionTrait, TryIntoModel};
+use sea_orm::{ActiveModelTrait, EntityTrait, Set, TransactionTrait};
 use serde::Deserialize;
-use tracing::log;
 use uuid::Uuid;
 
 use crate::{route_utils::app_errors::AppError, routes::AppState};
@@ -70,7 +65,7 @@ pub async fn create_explanation_markdown(
         ..Default::default()
     };
 
-    let markdown_id = explainable_markdown::Entity::insert(markdown)
+    explainable_markdown::Entity::insert(markdown)
         .exec(&txn)
         .await
         .map_err(|_| {
@@ -106,13 +101,12 @@ pub async fn create_explanation_markdown(
     Ok(())
 }
 
-pub async fn create_explanation_external(
-    State(app_state): State<AppState>,
-    Path(idea_id): Path<Uuid>,
-    Json(idea_data): Json<CreateMarkdownExercise>,
+pub async fn create_explanation_external(// State(app_state): State<AppState>,
+    // Path(idea_id): Path<Uuid>,
+    // Json(idea_data): Json<CreateMarkdownExercise>,
 ) -> String {
     // get an active model
-    let active_idea = idea::Entity::find_by_id(idea_id);
+    // let active_idea = idea::Entity::find_by_id(idea_id);
 
     // set the variables
 

@@ -44,10 +44,10 @@ pub fn create_routes(db: DatabaseConnection) -> Router {
             "/idea/:idea_id/explanation/markdown",
             post(create_explanation_markdown),
         )
-        // .route(
-        //     "/idea/:idea_id/explanation/external",
-        //     post(create_explanation_external),
-        // )
+        .route(
+            "/idea/:idea_id/explanation/external",
+            post(create_explanation_external),
+        )
         .with_state(AppState { db })
         .layer(TraceLayer::new_for_http())
 }
