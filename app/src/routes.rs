@@ -5,6 +5,7 @@ use axum::{
 use sea_orm::DatabaseConnection;
 use tower_http::trace::TraceLayer;
 
+mod explanation;
 mod hello;
 mod idea_atomic_update;
 mod idea_create;
@@ -20,6 +21,8 @@ use idea_delete::idea_delete;
 use idea_partial_update::idea_partial_update;
 use idea_retrieve::idea_retrieve;
 use ideas_list::ideas_list;
+
+use explanation::explanation_create::{create_explanation_external, create_explanation_markdown};
 
 #[derive(Debug, Clone)]
 pub struct AppState {
@@ -37,6 +40,14 @@ pub fn create_routes(db: DatabaseConnection) -> Router {
         .route("/idea/:idea_id", delete(idea_delete))
         .route("/idea/:idea_id", put(idea_atomic_update))
         .route("/idea/:idea_id", patch(idea_partial_update))
+        .route(
+            "/idea/:idea_id/explanation/markdown",
+            post(create_explanation_markdown),
+        )
+        // .route(
+        //     "/idea/:idea_id/explanation/external",
+        //     post(create_explanation_external),
+        // )
         .with_state(AppState { db })
         .layer(TraceLayer::new_for_http())
 }

@@ -3,26 +3,31 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "idea")]
+#[sea_orm(table_name = "explainable")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    pub name: String,
-    pub context: Option<String>,
-    pub description: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::exercise::Entity")]
-    Exercise,
+    #[sea_orm(has_many = "super::explainable_external::Entity")]
+    ExplainableExternal,
+    #[sea_orm(has_many = "super::explainable_markdown::Entity")]
+    ExplainableMarkdown,
     #[sea_orm(has_many = "super::explanation::Entity")]
     Explanation,
 }
 
-impl Related<super::exercise::Entity> for Entity {
+impl Related<super::explainable_external::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Exercise.def()
+        Relation::ExplainableExternal.def()
+    }
+}
+
+impl Related<super::explainable_markdown::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::ExplainableMarkdown.def()
     }
 }
 

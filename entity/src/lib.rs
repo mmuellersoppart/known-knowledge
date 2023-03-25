@@ -2,5 +2,14 @@
 
 pub mod prelude;
 
+pub mod card;
+pub mod exercise;
+pub mod exerciseable;
+pub mod exerciseable_external;
+pub mod exerciseable_notecard;
+pub mod explainable;
+pub mod explainable_external;
+pub mod explainable_markdown;
+pub mod explanation;
 pub mod idea;
-pub mod post;
+pub mod sea_orm_active_enums;

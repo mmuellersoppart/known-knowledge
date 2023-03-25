@@ -19,26 +19,26 @@ pub enum ExplainableType {
     Markdown,
 }
 
+#[derive(Iden)]
+pub enum Explainable {
+    Table,
+    Id,
+}
 
 #[derive(Iden)]
 pub enum ExplainableMarkdown {
     Table,
     Id,
-    Title,
+    ExplainableId,
     Markdown,
-    CreatedAt,
-    UpdatedAt,
 }
-
 
 #[derive(Iden)]
 pub enum ExplainableExternal {
     Table,
     Id,
-    Title,
+    ExplainableId,
     Link,
-    CreatedAt,
-    UpdatedAt,
 }
 
 #[derive(Iden)]
@@ -46,12 +46,13 @@ pub enum Explanation {
     Table,
     Id,
     IdeaId,
-    Type,
     ExplainableId,
+    ExplainableType, // redundant but useful for list view
+    // common to all explainable sub tables
+    Title,
+    CreatedAt,
+    UpdatedAt,
 }
-
-// will add fk to respective tables
-// explanation type field as well
 
 #[derive(Iden)]
 pub enum ExerciseableType {
@@ -63,31 +64,35 @@ pub enum ExerciseableType {
 }
 
 #[derive(Iden)]
-pub enum Card {  // a deck of notecards
+pub enum Exerciseable {
+    Table,
+    Id,
+}
+
+#[derive(Iden)]
+pub enum Card {
+    // a deck of notecards
     Table,
     Id,
     DeckId,
     Front,
-    Back
+    Back,
 }
 
 #[derive(Iden)]
-pub enum ExerciseableNotecard {  // a deck of notecards
+pub enum ExerciseableNotecard {
+    // a deck of notecards
     Table,
     Id,
-    Title,  // deck name
-    CreatedAt,
-    UpdatedAt,
+    ExerciseableId,
 }
 
 #[derive(Iden)]
 pub enum ExerciseableExternal {
     Table,
     Id,
-    Title,
+    ExerciseableId,
     Link,
-    CreatedAt,
-    UpdatedAt,
 }
 
 #[derive(Iden)]
@@ -95,7 +100,10 @@ pub enum Exercise {
     Table,
     Id,
     IdeaId,
-    Type,
-    ExerciseableId
+    ExerciseableId,
+    ExerciseableType, // redundant but useful for list view
+    // common to all explainable sub tables
+    Title,
+    CreatedAt,
+    UpdatedAt,
 }
-
