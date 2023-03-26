@@ -1,7 +1,6 @@
 use std::fmt::Display;
 
 use axum::{http::StatusCode, response::IntoResponse, Json};
-use sea_orm::error::DbErr;
 use serde::Serialize;
 
 pub struct AppError {
