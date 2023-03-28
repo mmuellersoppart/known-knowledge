@@ -11,10 +11,18 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(has_many = "super::exercise::Entity")]
+    Exercise,
     #[sea_orm(has_many = "super::exerciseable_external::Entity")]
     ExerciseableExternal,
     #[sea_orm(has_many = "super::exerciseable_notecard::Entity")]
     ExerciseableNotecard,
+}
+
+impl Related<super::exercise::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Exercise.def()
+    }
 }
 
 impl Related<super::exerciseable_external::Entity> for Entity {

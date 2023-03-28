@@ -136,7 +136,7 @@ impl MigrationTrait for Migration {
                     ))
                     .col(ColumnDef::new(Explanation::IdeaId).uuid().not_null())
                     .col(ColumnDef::new(Explanation::ExplainableId).uuid().not_null())
-                    .col(ColumnDef::new(Explanation::Title).string_len(128).not_null())
+                    .col(ColumnDef::new(Explanation::Title).string_len(128).not_null().unique_key())
                     .col(ColumnDef::new(Explanation::CreatedAt)
                             .timestamp_with_time_zone()
                             .not_null()

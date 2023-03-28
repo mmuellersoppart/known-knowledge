@@ -178,7 +178,7 @@ impl MigrationTrait for Migration {
                         ExerciseableType::Table,
                         [ExerciseableType::External, ExerciseableType::Notecard],
                     ))
-                    .col(ColumnDef::new(Exercise::Title).string_len(128).not_null())
+                    .col(ColumnDef::new(Exercise::Title).string_len(128).not_null().unique_key())
                     .col(
                         ColumnDef::new(Exercise::CreatedAt)
                             .timestamp_with_time_zone()

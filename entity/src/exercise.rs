@@ -19,13 +19,13 @@ pub struct Model {
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::exerciseable_notecard::Entity",
+        belongs_to = "super::exerciseable::Entity",
         from = "Column::ExerciseableId",
-        to = "super::exerciseable_notecard::Column::Id",
+        to = "super::exerciseable::Column::Id",
         on_update = "Cascade",
         on_delete = "Cascade"
     )]
-    ExerciseableNotecard,
+    Exerciseable,
     #[sea_orm(
         belongs_to = "super::idea::Entity",
         from = "Column::IdeaId",
@@ -36,9 +36,9 @@ pub enum Relation {
     Idea,
 }
 
-impl Related<super::exerciseable_notecard::Entity> for Entity {
+impl Related<super::exerciseable::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::ExerciseableNotecard.def()
+        Relation::Exerciseable.def()
     }
 }
 
