@@ -3,7 +3,8 @@ use sea_orm_migration::sea_orm::ConnectionTrait;
 use sea_orm_migration::sea_query::extension::postgres::Type;
 
 use crate::iden::{
-    Card, Exercise, ExerciseableExternal, ExerciseableNotecard, ExerciseableType, Idea, Exerciseable,
+    Card, Exercise, Exerciseable, ExerciseableExternal, ExerciseableNotecard, ExerciseableType,
+    Idea,
 };
 
 #[derive(DeriveMigrationName)]
@@ -25,23 +26,28 @@ impl MigrationTrait for Migration {
         // Exerciseable. Polymorphic Association Table, SuperTable method.
         // This table helps with referential integrity by erasing the id type of the sub tables
         manager
-           .create_table(
-                   Table::create()
-                        .table(Exerciseable::Table)
-                        .if_not_exists()
-                        .col(ColumnDef::new(Exerciseable::Id)
+            .create_table(
+                Table::create()
+                    .table(Exerciseable::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(Exerciseable::Id)
                             .uuid()
                             .not_null()
                             .primary_key()
                             .extra("DEFAULT gen_random_uuid()".to_string()),
-                        ).to_owned()
-              )
-        .await?;
+                    )
+                    .to_owned(),
+            )
+            .await?;
 
         //  External: exercise sub type
         let mut exerciseable_external_fk = ForeignKey::create()
             .name("externalexerciseable")
-            .from(ExerciseableExternal::Table, ExerciseableExternal::ExerciseableId)
+            .from(
+                ExerciseableExternal::Table,
+                ExerciseableExternal::ExerciseableId,
+            )
             .to(Exerciseable::Table, Exerciseable::Id)
             .on_delete(ForeignKeyAction::Cascade)
             .on_update(ForeignKeyAction::Cascade)
@@ -64,7 +70,11 @@ impl MigrationTrait for Migration {
                             .string()
                             .not_null(),
                     )
-                    .col(ColumnDef::new(ExerciseableExternal::ExerciseableId).uuid().not_null())
+                    .col(
+                        ColumnDef::new(ExerciseableExternal::ExerciseableId)
+                            .uuid()
+                            .not_null(),
+                    )
                     .foreign_key(&mut exerciseable_external_fk)
                     .to_owned(),
             )
@@ -73,7 +83,10 @@ impl MigrationTrait for Migration {
         // Notecard: exercise sub type
         let mut exerciseable_notecard_fk = ForeignKey::create()
             .name("notecardexerciseable")
-            .from(ExerciseableNotecard::Table, ExerciseableNotecard::ExerciseableId)
+            .from(
+                ExerciseableNotecard::Table,
+                ExerciseableNotecard::ExerciseableId,
+            )
             .to(Exerciseable::Table, Exerciseable::Id)
             .on_delete(ForeignKeyAction::Cascade)
             .on_update(ForeignKeyAction::Cascade)
@@ -91,9 +104,13 @@ impl MigrationTrait for Migration {
                             .primary_key()
                             .extra("DEFAULT gen_random_uuid()".to_string()),
                     )
-                    .col(ColumnDef::new(ExerciseableNotecard::ExerciseableId).uuid().not_null())
+                    .col(
+                        ColumnDef::new(ExerciseableNotecard::ExerciseableId)
+                            .uuid()
+                            .not_null(),
+                    )
                     .foreign_key(&mut exerciseable_notecard_fk)
-                    .to_owned()
+                    .to_owned(),
             )
             .await?;
 
@@ -138,7 +155,7 @@ impl MigrationTrait for Migration {
         let mut exerciseable_fk = ForeignKey::create()
             .name("exerciseexerciseable")
             .from(Exercise::Table, Exercise::ExerciseableId)
-            .to(ExerciseableNotecard::Table, ExerciseableNotecard::Id)
+            .to(Exerciseable::Table, Exerciseable::Id)
             .on_delete(ForeignKeyAction::Cascade)
             .on_update(ForeignKeyAction::Cascade)
             .to_owned();
@@ -162,7 +179,8 @@ impl MigrationTrait for Migration {
                         [ExerciseableType::External, ExerciseableType::Notecard],
                     ))
                     .col(ColumnDef::new(Exercise::Title).string_len(128).not_null())
-                    .col(ColumnDef::new(Exercise::CreatedAt)
+                    .col(
+                        ColumnDef::new(Exercise::CreatedAt)
                             .timestamp_with_time_zone()
                             .not_null()
                             .default(Keyword::CurrentTimestamp),
