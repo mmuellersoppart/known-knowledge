@@ -28,18 +28,6 @@ pub async fn create_exercise_external(
 ) -> Result<(), AppError> {
     let txn = app_state.db.begin().await.map_err(AppError::from)?;
 
-    // confirm id is legit
-    let active_idea = idea::Entity::find_by_id(idea_id)
-        .one(&app_state.db)
-        .await
-        .map_err(AppError::from)?;
-
-    let idea_id = if let Some(active_idea) = active_idea {
-        active_idea.id
-    } else {
-        return Err(AppError::new(StatusCode::NOT_FOUND, "Failed to find idea."));
-    };
-
     // Create Explainable Id
     let active_exerciseable = exerciseable::ActiveModel {
         ..Default::default()
@@ -93,18 +81,6 @@ pub async fn create_exercise_notecard(
         Json(deck_data): Json<CreateNotecardDeck>,
         ) -> Result<(), AppError> {
     let txn = app_state.db.begin().await.map_err(AppError::from)?;
-
-    // confirm id is legit
-    let active_idea = idea::Entity::find_by_id(idea_id)
-        .one(&app_state.db)
-        .await
-        .map_err(AppError::from)?;
-
-    let idea_id = if let Some(active_idea) = active_idea {
-        active_idea.id
-    } else {
-        return Err(AppError::new(StatusCode::NOT_FOUND, "Failed to find idea."));
-    };
 
     // Create Explainable Id
     let active_exerciseable = exerciseable::ActiveModel {
