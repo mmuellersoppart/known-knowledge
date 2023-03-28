@@ -23,7 +23,7 @@ use idea_partial_update::idea_partial_update;
 use idea_retrieve::idea_retrieve;
 use ideas_list::ideas_list;
 
-use exercise::exercise_create::{create_exercise_external, create_exercise_notecard};
+use exercise::exercise_create::{create_exercise_external, create_exercise_notecard, create_card};
 use explanation::explanation_create::{create_explanation_external, create_explanation_markdown};
 
 #[derive(Debug, Clone)]
@@ -57,6 +57,10 @@ pub fn create_routes(db: DatabaseConnection) -> Router {
         .route(
             "/idea/:idea_id/exercise/notecard",
             post(create_exercise_notecard),
+        )
+        .route(
+                "/notecard/:deck_id",
+            post(create_card),
         )
         .with_state(AppState { db })
         .layer(TraceLayer::new_for_http())

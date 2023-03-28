@@ -10,7 +10,7 @@ use uuid::Uuid;
 use crate::{route_utils::app_errors::AppError, routes::AppState};
 
 use entity::{
-    exercise, exerciseable, exerciseable_external, idea, sea_orm_active_enums::ExerciseableType, exerciseable_notecard,
+    exercise, exerciseable, exerciseable_external, idea, sea_orm_active_enums::ExerciseableType, exerciseable_notecard, card,
 };
 
 
@@ -139,6 +139,41 @@ pub async fn create_exercise_notecard(
     };
 
     exercise.save(&txn).await.map_err(AppError::from)?;
+
+    txn.commit().await.map_err(AppError::from)?;
+
+    Ok(())
+}
+
+
+// Notecard
+#[derive(Deserialize, Debug)]
+pub struct CreateCard {
+    front: String,
+    back: String,
+}
+
+pub async fn create_card(
+        State(app_state): State<AppState>,
+        Path(deck_id): Path<Uuid>,
+        Json(card_data): Json<CreateCard>,
+        ) -> Result<(), AppError> {
+    let txn = app_state.db.begin().await.map_err(AppError::from)?;
+
+    // TODO: check if deck exists
+
+    // Create markdown
+    let new_card = card::ActiveModel {
+        deck_id: Set(deck_id),
+        front: Set(Some(card_data.front)),
+        back: Set(Some(card_data.back)),
+        ..Default::default()
+    };
+
+    card::Entity::insert(new_card)
+        .exec(&txn)
+        .await
+        .map_err(AppError::from)?;
 
     txn.commit().await.map_err(AppError::from)?;
 
