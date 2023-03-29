@@ -9,6 +9,20 @@ services:
       POSTGRES_PASSWORD: password
     ports:
       - 5433:5432
+  be:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3002:80
+    expose:
+      - 3002
+    depends_on:
+        - kdatabase
+    environment:
+        - PORT=80
+        - DATABASE_URL=postgres://postgres:password@kdatabase
+
 
 volumes:
   db-data:

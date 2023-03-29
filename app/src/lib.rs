@@ -10,7 +10,7 @@ pub async fn run() {
     // load env variables
 
     let db_url = dotenvy::var("DATABASE_URL")
-        .unwrap_or("postgre://postgres:password@localhost:5433/postgres".to_string());
+        .unwrap_or("postgres://postgres:password@localhost:5432/postgres".to_string());
     event!(Level::INFO, "{db_url}");
 
     // connect to database
@@ -26,8 +26,8 @@ pub async fn run() {
     // define the application
     let app = create_routes(db);
 
-    event!(Level::INFO, "Listening on 0.0.0.0:3002");
-    axum::Server::bind(&"0.0.0.0:3002".parse().unwrap())
+    event!(Level::INFO, "Listening on 0.0.0.0:80");
+    axum::Server::bind(&"0.0.0.0:80".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap()
