@@ -1,9 +1,10 @@
 use axum::{
     routing::{delete, get, patch, post, put},
-    Router,
+    Router, http::Method,
 };
 use sea_orm::DatabaseConnection;
 use tower_http::trace::TraceLayer;
+use tower_http::cors::{Any, CorsLayer};
 
 mod exercise;
 mod explanation;
@@ -32,6 +33,11 @@ pub struct AppState {
 }
 
 pub fn create_routes(db: DatabaseConnection) -> Router {
+    let cors = CorsLayer::new()
+        .allow_methods([Method::GET, Method::POST])
+        .allow_headers(Any)
+        .allow_origin(Any);
+
     Router::new()
         .route("/hello", get(hello))
         .route("/helloo", get(helloo))
@@ -64,4 +70,5 @@ pub fn create_routes(db: DatabaseConnection) -> Router {
         )
         .with_state(AppState { db })
         .layer(TraceLayer::new_for_http())
+        .layer(cors)
 }
