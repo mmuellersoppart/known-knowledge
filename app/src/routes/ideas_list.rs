@@ -10,6 +10,7 @@ use::entity::idea;
 pub struct ListIdea {
     id: Uuid,
     name: String,
+    context: Option<String>,
 }
 
 pub async fn ideas_list(
@@ -25,6 +26,7 @@ pub async fn ideas_list(
         .map(|idea| ListIdea {
             id: idea.id,
             name: idea.name.clone(),
+            context: idea.context.clone(),
         })
         .collect();
     Ok(Json(ideas))
