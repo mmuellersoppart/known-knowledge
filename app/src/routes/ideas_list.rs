@@ -1,10 +1,11 @@
 use axum::{extract::State, http::StatusCode, Json};
-use sea_orm::EntityTrait;
+use sea_orm::{EntityTrait, QueryOrder};
 use serde::Serialize;
 use uuid::Uuid;
 
 use super::AppState;
 use::entity::idea;
+use migration::iden::Idea;
 
 #[derive(Debug, Serialize)]
 pub struct ListIdea {
@@ -17,6 +18,7 @@ pub async fn ideas_list(
     State(app_state): State<AppState>,
 ) -> Result<Json<Vec<ListIdea>>, StatusCode> {
     let ideas = idea::Entity::find()
+        .order_by_asc(idea::Column::Name)
         .all(&app_state.db)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
