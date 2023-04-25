@@ -22,3 +22,4 @@ dotenvy = "0.15.6"
 uuid = { version = "1.3.0", features = ["v4", "serde"] }
 serde = { version = "1.0.152", features = ["derive"] }
 serde_with = "2.2.0"
+sea-query = { version = "0.28.4", features = ["uuid", "serde_json", "time"] }

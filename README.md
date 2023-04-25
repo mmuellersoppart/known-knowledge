@@ -1,5 +1,10 @@
 # WIP. I haven't even proofread things. 
  
+# Get things running
+
+`cargo watch -s "cargo run --bin app"`
+
+
 # Known Knowledge
 
 A web application built for collaborative knowledge archiving and transmission. This proposal hopes to accomplish at least the following
