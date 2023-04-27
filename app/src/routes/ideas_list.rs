@@ -2,7 +2,7 @@ use axum::{extract::State, http::StatusCode, Json};
 use axum::extract::Query;
 use sea_orm::{ConnectionTrait, DatabaseBackend, EntityTrait, QueryOrder, QueryResult, Statement, FromQueryResult};
 use sea_query;
-use sea_query::{Expr, Iden, IntoColumnRef, PostgresQueryBuilder, SelectStatement};
+use sea_query::{Expr, Iden, IntoColumnRef, NullOrdering, Order, OrderedStatement, PostgresQueryBuilder, SelectStatement};
 use sea_query::extension::postgres::PgExpr;
 use serde::{Deserialize, Serialize};
 use tracing::log::{log, Level};
@@ -11,6 +11,7 @@ use uuid::Uuid;
 use super::AppState;
 use::entity::idea;
 use migration::iden::Idea;
+use crate::route_utils::app_errors::AppError;
 
 #[derive(Debug, Serialize, FromQueryResult)]
 pub struct ListIdea {
@@ -25,9 +26,9 @@ pub struct Params {
     context_filter: Option<String>
 }
 
-fn apply_filter(mut query: SelectStatement, col: impl IntoColumnRef, text: Option<String>) -> SelectStatement {
+fn apply_filter(mut query: SelectStatement, col: impl IntoColumnRef, text: &Option<String>) -> SelectStatement {
     if let Some(text) = text {
-        return query.and_where(Expr::col(col).ilike(text + "%")).to_owned()
+        return query.and_where(Expr::col(col).ilike(text.to_owned() + "%")).to_owned()
     }
 
     query
@@ -36,7 +37,7 @@ fn apply_filter(mut query: SelectStatement, col: impl IntoColumnRef, text: Optio
 pub async fn ideas_list(
     Query(params): Query<Params>,
     State(app_state): State<AppState>,
-) -> Result<Json<Vec<ListIdea>>, StatusCode> {
+) -> Result<Json<Vec<ListIdea>>, AppError> {
 
 
     log!(Level::Debug, "{params:?}");
@@ -50,14 +51,22 @@ pub async fn ideas_list(
         .from(Idea::Table)
          .to_owned();
 
-    let query = apply_filter(query, Idea::Name, params.name_filter);
-    let query = apply_filter(query, Idea::Context, params.context_filter);
+    let query = apply_filter(query, Idea::Name, &params.name_filter);
+    let mut query = apply_filter(query, Idea::Context, &params.context_filter);
+
+    let query = if let Some(_) = params.context_filter {
+        query
+            .order_by_with_nulls((Idea::Table, Idea::Context), Order::Asc, NullOrdering::Last).to_owned()
+            .order_by_with_nulls((Idea::Table, Idea::Name), Order::Asc, NullOrdering::Last).to_owned()
+    } else {
+        query.order_by(Idea::Name, Order::Asc).to_owned()
+    };
 
     let (sql, values) = query.build(PostgresQueryBuilder);
 
     let stmt = Statement::from_sql_and_values(DatabaseBackend::Postgres, &sql.as_str(), values);
 
-    let query_result: Vec<QueryResult> = app_state.db.query_all(stmt).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let query_result: Vec<QueryResult> = app_state.db.query_all(stmt).await.map_err(|e| AppError::from(e))?;
 
     let ideas: Vec<ListIdea> = query_result.into_iter()
         .map(|result| {
