@@ -54,13 +54,9 @@ pub async fn ideas_list(
     let query = apply_filter(query, Idea::Name, &params.name_filter);
     let mut query = apply_filter(query, Idea::Context, &params.context_filter);
 
-    let query = if let Some(_) = params.context_filter {
-        query
-            .order_by_with_nulls((Idea::Table, Idea::Context), Order::Asc, NullOrdering::Last).to_owned()
-            .order_by_with_nulls((Idea::Table, Idea::Name), Order::Asc, NullOrdering::Last).to_owned()
-    } else {
-        query.order_by(Idea::Name, Order::Asc).to_owned()
-    };
+    query
+        .order_by_with_nulls((Idea::Table, Idea::Context), Order::Asc, NullOrdering::Last).to_owned()
+        .order_by_with_nulls((Idea::Table, Idea::Name), Order::Asc, NullOrdering::Last).to_owned();
 
     let (sql, values) = query.build(PostgresQueryBuilder);
 

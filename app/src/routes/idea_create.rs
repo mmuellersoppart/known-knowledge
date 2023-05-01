@@ -25,9 +25,14 @@ pub async fn idea_create(
     Json(idea_data): Json<CreateIdea>,
 ) -> Result<Json<CreateIdeaResponse>, StatusCode> {
     // create active model
+    let context: Option<String> = match idea_data.context.as_deref() {
+        None | Some("") => None,
+        Some(_) => idea_data.context
+    };
+
     let active_idea = ActiveModel {
         name: Set(idea_data.name),
-        context: Set(idea_data.context),
+        context: Set(context),
         description: Set(idea_data.description),
         ..Default::default()
     };
