@@ -2,12 +2,26 @@ pub use sea_orm_migration::prelude::*;
 
 /// Learn more at https://docs.rs/seaquery#iden
 #[derive(Iden)]
+pub enum Usr {
+    Table,
+    Id,
+    Username,
+    Password,
+    DeletedAt,
+    Token
+}
+
+#[derive(Iden)]
 pub enum Idea {
     Table,
     Id,
     Name,
     Context,
     Description,
+    CreatedAt,
+    UpdatedAt,
+    DeletedAt,
+    UsrId,
 }
 
 #[derive(Iden)]
@@ -46,12 +60,14 @@ pub enum Explanation {
     Table,
     Id,
     IdeaId,
+    UsrId,
     ExplainableId,
     ExplainableType, // redundant but useful for list view
     // common to all explainable sub tables
     Title,
     CreatedAt,
     UpdatedAt,
+    DeletedAt,
 }
 
 #[derive(Iden)]
@@ -100,10 +116,12 @@ pub enum Exercise {
     Table,
     Id,
     IdeaId,
+    UsrId,
     ExerciseableId,
     ExerciseableType, // redundant but useful for list view
     // common to all explainable sub tables
     Title,
     CreatedAt,
     UpdatedAt,
+    DeletedAt,
 }
