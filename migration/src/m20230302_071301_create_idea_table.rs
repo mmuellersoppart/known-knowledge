@@ -36,7 +36,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Idea::Context).string_len(64))
                     .col(ColumnDef::new(Idea::Description).string_len(512))
                     .col(ColumnDef::new(Idea::CreatedAt).timestamp_with_time_zone().not_null().default(Keyword::CurrentTimestamp))
-                    .col(ColumnDef::new(Idea::UpdatedAt).timestamp_with_time_zone().not_null().default(Keyword::CurrentTimestamp))
+                    .col(ColumnDef::new(Idea::UpdatedAt).timestamp_with_time_zone().null())
                     .col(ColumnDef::new(Idea::DeletedAt).timestamp_with_time_zone().null())
                     .col(ColumnDef::new(Idea::UsrId).uuid())
                     .foreign_key(&mut usr_fk)

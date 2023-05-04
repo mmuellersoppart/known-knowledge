@@ -1,11 +1,7 @@
 use sea_orm_migration::prelude::*;
 use sea_orm_migration::sea_orm::ConnectionTrait;
 use sea_orm_migration::sea_query::extension::postgres::Type;
-
-use crate::iden::{
-    Card, Exercise, Exerciseable, ExerciseableExternal, ExerciseableNotecard, ExerciseableType,
-    Idea,
-};
+use crate::iden::{Card, Exercise, Exerciseable, ExerciseableExternal, ExerciseableNotecard, ExerciseableType, Idea, Usr};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -152,6 +148,14 @@ impl MigrationTrait for Migration {
             .on_update(ForeignKeyAction::Cascade)
             .to_owned();
 
+        let mut usr_fk = ForeignKey::create()
+            .name("exerciseusr")
+            .from(Exercise::Table, Exercise::UsrId)
+            .to(Usr::Table, Usr::Id)
+            .on_delete(ForeignKeyAction::Cascade)
+            .on_update(ForeignKeyAction::Cascade)
+            .to_owned();
+
         let mut exerciseable_fk = ForeignKey::create()
             .name("exerciseexerciseable")
             .from(Exercise::Table, Exercise::ExerciseableId)
@@ -185,7 +189,10 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .default(Keyword::CurrentTimestamp),
                     )
-                    .col(ColumnDef::new(Exercise::UpdatedAt).timestamp_with_time_zone())
+                    .col(ColumnDef::new(Exercise::UpdatedAt).timestamp_with_time_zone().null())
+                    .col(ColumnDef::new(Exercise::DeletedAt).timestamp_with_time_zone().null())
+                    .col(ColumnDef::new(Exercise::UsrId).uuid())
+                    .foreign_key(&mut usr_fk)
                     .foreign_key(&mut idea_fk)
                     .foreign_key(&mut exerciseable_fk)
                     .to_owned(),

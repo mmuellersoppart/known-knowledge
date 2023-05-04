@@ -2,7 +2,7 @@ use sea_orm_migration::prelude::*;
 use sea_orm_migration::sea_orm::ConnectionTrait;
 use sea_orm_migration::sea_query::extension::postgres::Type;
 
-use crate::iden::{ExplainableExternal, ExplainableMarkdown, ExplainableType, Explanation, Idea, Explainable};
+use crate::iden::{ExplainableExternal, ExplainableMarkdown, ExplainableType, Explanation, Idea, Explainable, Usr};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -110,6 +110,14 @@ impl MigrationTrait for Migration {
             .on_update(ForeignKeyAction::Cascade)
             .to_owned();
 
+        let mut usr_fk = ForeignKey::create()
+            .name("explanationsusr")
+            .from(Explanation::Table, Explanation::UsrId)
+            .to(Usr::Table, Usr::Id)
+            .on_delete(ForeignKeyAction::Cascade)
+            .on_update(ForeignKeyAction::Cascade)
+            .to_owned();
+
         let mut explainable_fk = ForeignKey::create()
             .name("explanationsexplainable")
             .from(Explanation::Table, Explanation::ExplainableId)
@@ -142,7 +150,10 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .default(Keyword::CurrentTimestamp),
                     )
-                    .col(ColumnDef::new(Explanation::UpdatedAt).timestamp_with_time_zone())
+                    .col(ColumnDef::new(Explanation::UpdatedAt).timestamp_with_time_zone().null())
+                    .col(ColumnDef::new(Explanation::DeletedAt).timestamp_with_time_zone().null())
+                    .col(ColumnDef::new(Explanation::UsrId).uuid())
+                    .foreign_key(&mut usr_fk)
                     .foreign_key(&mut idea_fk)
                     .foreign_key(&mut explainable_fk)
                     .to_owned(),
