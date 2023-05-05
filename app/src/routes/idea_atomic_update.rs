@@ -30,6 +30,10 @@ pub async fn idea_atomic_update(
         name: Set(idea_data.name),
         context: Set(idea_data.context),
         description: Set(idea_data.description),
+        created_at: Default::default(),
+        updated_at: Default::default(),
+        deleted_at: Default::default(),
+        usr_id: Default::default(),
     };
 
     // full replacement (change the primary key, id)

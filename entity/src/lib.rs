@@ -13,3 +13,4 @@ pub mod explainable_markdown;
 pub mod explanation;
 pub mod idea;
 pub mod sea_orm_active_enums;
+pub mod usr;

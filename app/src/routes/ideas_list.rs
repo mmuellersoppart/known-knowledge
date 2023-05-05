@@ -41,7 +41,6 @@ pub async fn ideas_list(
     State(app_state): State<AppState>,
 ) -> Result<Json<Vec<ListIdea>>, AppError> {
 
-
     log!(Level::Debug, "{params:?}");
 
      let query = sea_query::Query::select()

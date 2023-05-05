@@ -11,9 +11,12 @@ pub struct Model {
     pub idea_id: Uuid,
     pub exerciseable_id: Uuid,
     pub exerciseable_type: Option<ExerciseableType>,
+    #[sea_orm(unique)]
     pub title: String,
     pub created_at: DateTimeWithTimeZone,
-    pub updated_at: Option<DateTimeWithTimeZone>,
+    pub updated_at: DateTimeWithTimeZone,
+    pub deleted_at: Option<DateTimeWithTimeZone>,
+    pub usr_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -34,6 +37,14 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Idea,
+    #[sea_orm(
+        belongs_to = "super::usr::Entity",
+        from = "Column::UsrId",
+        to = "super::usr::Column::Id",
+        on_update = "Cascade",
+        on_delete = "Cascade"
+    )]
+    Usr,
 }
 
 impl Related<super::exerciseable::Entity> for Entity {
@@ -45,6 +56,12 @@ impl Related<super::exerciseable::Entity> for Entity {
 impl Related<super::idea::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Idea.def()
+    }
+}
+
+impl Related<super::usr::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Usr.def()
     }
 }
 

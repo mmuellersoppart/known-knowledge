@@ -10,3 +10,4 @@ pub use super::explainable_external::Entity as ExplainableExternal;
 pub use super::explainable_markdown::Entity as ExplainableMarkdown;
 pub use super::explanation::Entity as Explanation;
 pub use super::idea::Entity as Idea;
+pub use super::usr::Entity as Usr;

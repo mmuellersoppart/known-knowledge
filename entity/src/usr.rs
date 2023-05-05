@@ -3,17 +3,14 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "idea")]
+#[sea_orm(table_name = "usr")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    pub name: String,
-    pub context: Option<String>,
-    pub description: Option<String>,
-    pub created_at: DateTimeWithTimeZone,
-    pub updated_at: DateTimeWithTimeZone,
+    pub username: String,
+    pub password: String,
     pub deleted_at: Option<DateTimeWithTimeZone>,
-    pub usr_id: Option<Uuid>,
+    pub token: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -22,14 +19,8 @@ pub enum Relation {
     Exercise,
     #[sea_orm(has_many = "super::explanation::Entity")]
     Explanation,
-    #[sea_orm(
-        belongs_to = "super::usr::Entity",
-        from = "Column::UsrId",
-        to = "super::usr::Column::Id",
-        on_update = "Cascade",
-        on_delete = "Cascade"
-    )]
-    Usr,
+    #[sea_orm(has_many = "super::idea::Entity")]
+    Idea,
 }
 
 impl Related<super::exercise::Entity> for Entity {
@@ -44,9 +35,9 @@ impl Related<super::explanation::Entity> for Entity {
     }
 }
 
-impl Related<super::usr::Entity> for Entity {
+impl Related<super::idea::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Usr.def()
+        Relation::Idea.def()
     }
 }
 
