@@ -13,6 +13,7 @@ pub struct CreateIdea {
     name: String,
     context: Option<String>,
     description: Option<String>,
+    usr_id: Option<Uuid>,
 }
 
 #[derive(Debug, Serialize)]
@@ -34,6 +35,7 @@ pub async fn idea_create(
         name: Set(idea_data.name),
         context: Set(context),
         description: Set(idea_data.description),
+        usr_id: Set(idea_data.usr_id),
         ..Default::default()
     };
 
