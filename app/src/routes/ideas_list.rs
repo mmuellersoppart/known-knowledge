@@ -7,6 +7,7 @@ use sea_query::extension::postgres::PgExpr;
 use serde::{Deserialize, Serialize};
 use tracing::log::{log, Level};
 use uuid::Uuid;
+use chrono::{FixedOffset, DateTime};
 
 use super::AppState;
 use::entity::idea;
@@ -18,6 +19,7 @@ pub struct ListIdea {
     id: Uuid,
     name: String,
     context: Option<String>,
+    updated_at: DateTime<FixedOffset>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -47,6 +49,7 @@ pub async fn ideas_list(
             Idea::Id,
             Idea::Name,
             Idea::Context,
+            Idea::UpdatedAt,
         ])
         .from(Idea::Table)
          .to_owned();
@@ -54,9 +57,15 @@ pub async fn ideas_list(
     let query = apply_filter(query, Idea::Name, &params.name_filter);
     let mut query = apply_filter(query, Idea::Context, &params.context_filter);
 
-    query
-        .order_by_with_nulls((Idea::Table, Idea::Context), Order::Asc, NullOrdering::Last).to_owned()
-        .order_by_with_nulls((Idea::Table, Idea::Name), Order::Asc, NullOrdering::Last).to_owned();
+    if params.context_filter.is_none() && params.name_filter.is_none() {
+        query = query
+            .order_by( Idea::UpdatedAt, Order::Desc).to_owned();
+    } else {
+        query = query
+            .order_by_with_nulls((Idea::Table, Idea::Context), Order::Asc, NullOrdering::Last).to_owned()
+            .order_by_with_nulls((Idea::Table, Idea::Name), Order::Asc, NullOrdering::Last).to_owned();
+    }
+
 
     let (sql, values) = query.build(PostgresQueryBuilder);
 
@@ -69,10 +78,12 @@ pub async fn ideas_list(
             let id = result.try_get::<Uuid>("", "id").expect("failed to get id");
             let name = result.try_get::<String>("", "name").expect("failed to get name");
             let context = result.try_get::<Option<String>>("", "context").expect("failed to get context");
+            let updated_at = result.try_get::<DateTime<FixedOffset>>("", "updated_at").expect("failed to get updated time");
             ListIdea {
                 id,
                 name,
                 context,
+                updated_at,
             }
         })
         .collect();

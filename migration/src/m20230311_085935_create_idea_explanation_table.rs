@@ -150,7 +150,8 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .default(Keyword::CurrentTimestamp),
                     )
-                    .col(ColumnDef::new(Explanation::UpdatedAt).timestamp_with_time_zone().null())
+                    .col(ColumnDef::new(Explanation::UpdatedAt).timestamp_with_time_zone().not_null()
+                             .default(Keyword::CurrentTimestamp))
                     .col(ColumnDef::new(Explanation::DeletedAt).timestamp_with_time_zone().null())
                     .col(ColumnDef::new(Explanation::UsrId).uuid())
                     .foreign_key(&mut usr_fk)

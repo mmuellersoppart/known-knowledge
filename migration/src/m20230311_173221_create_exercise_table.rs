@@ -189,7 +189,8 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .default(Keyword::CurrentTimestamp),
                     )
-                    .col(ColumnDef::new(Exercise::UpdatedAt).timestamp_with_time_zone().null())
+                    .col(ColumnDef::new(Exercise::UpdatedAt).timestamp_with_time_zone().not_null()
+                             .default(Keyword::CurrentTimestamp))
                     .col(ColumnDef::new(Exercise::DeletedAt).timestamp_with_time_zone().null())
                     .col(ColumnDef::new(Exercise::UsrId).uuid())
                     .foreign_key(&mut usr_fk)
